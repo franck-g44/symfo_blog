@@ -1,0 +1,1 @@
+# symfo_blog
