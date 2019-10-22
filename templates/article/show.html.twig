@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+    <article>
+        <h1>{{ article.title }}</h1>
+        <p>Ecrit le {{ article.publishedAt | date('d/m/Y à H:i:s') }}</p>
+        <div>
+            {{ article.content | nl2br }}
+        </div>
+    </article>
+{% endblock %}
+
+{% block title %}{{ article.title }}{% endblock %}
