@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Article{% endblock %}
+
+{% block body %}
+
+        <h1>Nouvel Article </h1>
+
+    {{ form_start(form) }}
+
+    {{ form_row(form) }}
+
+    <button>Créer</button>
+
+
+    {{ form_end(form) }}
+{% endblock %}
+

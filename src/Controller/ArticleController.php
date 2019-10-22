@@ -33,4 +33,24 @@ class ArticleController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/new")
+     */
+    public function new(){
+        $article = new Article();
+
+        $form = $this->createFormBuilder($article)
+            ->add('title', null, [
+                'label' => 'Titre',
+            ])
+            ->add('content')
+            ->add('publishedAt')
+            ->getForm();
+
+        return $this->render('article/new.html.twig',[
+            'form' => $form->createView(),
+
+        ]);
+    }
+
 }
