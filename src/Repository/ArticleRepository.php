@@ -24,7 +24,8 @@ class ArticleRepository extends ServiceEntityRepository
      *
      * @return Article[]
      */
-    public function findLatestPublished(int $limit=10): array{
+    public function findLatestPublished(int $limit=10): array
+    {
         return $this->getEntityManager()->createQuery(
            'SELECT a, w FROM '.Article::class.' a'
             .' JOIN a.writtenBy w'

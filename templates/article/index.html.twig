@@ -1,17 +1,22 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Derniers articles{% endblock %}
 
 {% block body %}
     <h1>Derniers articles</h1>
-{% if articles is not empty %}
-    <ul>
-        {% for article in articles %}
-            <li><a href="{{ path('app_article_show',{id:article.id}) }}">{{ article.title }}</a>{{ article.writtenBy.name }}</li>
-        {% endfor %}
-</ul>
-{% else %}
+    {# en PHP : ! empty(articles) #}
+    {% if articles is not empty %}
+        <ul>
+            {% for article in articles %}
+                <li>
+                    <a href="{{ path('app_article_show', {id: article.id}) }}">{{ article.title }}</a> - {{ article.writtenBy.name }}
+                    <a href="{{ path('app_article_edit', {id: article.id}) }}">Éditer</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
         <p>Pas d'articles</p>
     {% endif %}
-
+    <p>Insérer un <a href="{{ path('app_article_new') }}">nouvel article</a></p>
 {% endblock %}

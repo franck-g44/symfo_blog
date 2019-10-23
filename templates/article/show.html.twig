@@ -1,11 +1,11 @@
+
 {% extends 'base.html.twig' %}
-
-
 
 {% block body %}
     <article>
-        <h1>{{ article.title }}</h1>
-        <p>Ecrit le {{ article.publishedAt | date('d/m/Y à H:i:s') }}
+        <h1>{{ article.title | upper }}</h1>
+        <p>
+            Écrit le {{ article.publishedAt | date('d/m/Y à H:i:s') }}
             par {{ article.writtenBy.name }} &lt;{{ article.writtenBy.email }}&gt;
         </p>
         <div>

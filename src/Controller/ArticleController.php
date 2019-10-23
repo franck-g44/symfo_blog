@@ -5,14 +5,11 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Author;
 use App\Repository\ArticleRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-
-
 class ArticleController extends AbstractController
 {
     /**
@@ -21,30 +18,28 @@ class ArticleController extends AbstractController
     public function index(ArticleRepository $repository)
     {
         $articles = $repository->findLatestPublished();
-
-
         return $this->render('article/index.html.twig', [
             'articles' => $articles,
         ]);
     }
-
     /**
      * @Route("/{id}", requirements={"id":"\d+"}, methods="GET")
      */
-    public function show(Article $article){
-
+    public function show(Article $article)
+    {
         return $this->render('article/show.html.twig', [
             'article' => $article,
         ]);
     }
-
     /**
-     * @Route("/new", methods={"GET","POST"})
+     * @Route("/new", methods={"GET", "POST"})
      */
-    public function new(Request $request){
+    public function new(Request $request)
+    {
         $article = new Article();
-
-        $form = $this->createFormBuilder($article)
+        $form = $this->createFormBuilder($article, [
+            'validation_groups' => ['new', 'Default'],
+        ])
             ->add('title', null, [
                 'label' => 'Titre',
             ])
@@ -58,24 +53,48 @@ class ArticleController extends AbstractController
                 'choice_label' => 'name'
             ])
             ->getForm();
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($article);
             $em->flush();
-
+            $this->addFlash('success', 'Le nouvel article a bien été créé');
             return $this->redirectToRoute('app_article_show', [
                 'id' => $article->getId(),
             ]);
-
         }
-
-        return $this->render('article/new.html.twig',[
+        return $this->render('article/new.html.twig', [
             'form' => $form->createView(),
-
         ]);
     }
-
+    /**
+     * @Route(
+     *     "/{id}/edit",
+     *     requirements={"id": "\d+"},
+     *     methods={"GET", "POST"}
+     * )
+     */
+    public function edit(Request $request, Article $article)
+    {
+        $form = $this->createFormBuilder($article)
+            ->add('title', null, [
+                'label' => 'Titre',
+            ])
+            ->add('content')
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($article);
+            $em->flush();
+            $this->addFlash('success', 'L\'article a bien été modifié');
+            return $this->redirectToRoute('app_article_show', [
+                'id' => $article->getId(),
+            ]);
+        }
+        return $this->render('article/edit.html.twig', [
+            'form' => $form->createView(),
+            'article' => $article,
+        ]);
+    }
 }
