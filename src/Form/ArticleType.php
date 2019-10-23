@@ -18,22 +18,26 @@ class ArticleType extends AbstractType
             ->add('title', null, [
                 'label' => 'Titre',
             ])
-            ->add('content')
-            ->add('publishedAt', DateType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('writtenBy', EntityType::class, [
-                'class' => Author::class,
-                'choice_label' => 'name'
-            ])
-        ;
+            ->add('content');
+        if ($options['full']) {
+            $builder
+                ->add('publishedAt', DateType::class, [
+                    'widget' => 'single_text',
+                    'required' => false,
+                ])
+                ->add('writtenBy', EntityType::class, [
+                    'class' => Author::class,
+                    'choice_label' => 'name'
+                ])
+            ;
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Article::class,
+            'full' => true,
         ]);
     }
 }

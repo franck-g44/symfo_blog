@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Author;
+use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,22 +38,11 @@ class ArticleController extends AbstractController
     public function new(Request $request)
     {
         $article = new Article();
-        $form = $this->createFormBuilder($article, [
+
+        $form = $this->createForm(ArticleType::class, $article, [
             'validation_groups' => ['new', 'Default'],
-        ])
-            ->add('title', null, [
-                'label' => 'Titre',
-            ])
-            ->add('content')
-            ->add('publishedAt', DateType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('writtenBy', EntityType::class, [
-                'class' => Author::class,
-                'choice_label' => 'name'
-            ])
-            ->getForm();
+        ]);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -76,18 +66,19 @@ class ArticleController extends AbstractController
      */
     public function edit(Request $request, Article $article)
     {
-        $form = $this->createFormBuilder($article)
-            ->add('title', null, [
-                'label' => 'Titre',
-            ])
-            ->add('content')
-            ->getForm();
+        $form = $this->createForm(ArticleType::class, $article, [
+            'full' => false,
+        ]);
+
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($article);
             $em->flush();
+
             $this->addFlash('success', 'L\'article a bien été modifié');
+            
             return $this->redirectToRoute('app_article_show', [
                 'id' => $article->getId(),
             ]);
