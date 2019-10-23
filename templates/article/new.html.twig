@@ -5,12 +5,6 @@
 {% block body %}
     <h1>Nouvel article</h1>
 
-    {{ form_start(form) }}
-
-    {{ form_errors(form) }}
-    {{ form_rest(form) }}
-
-    <button>Créer</button>
-    {{ form_end(form) }}
+    {{ include('article/_form.html.twig', {action: 'créer'}) }}
 {% endblock %}
 
