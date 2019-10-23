@@ -9,6 +9,7 @@ use App\Repository\ArticleRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 class ArticleController extends AbstractController
@@ -44,14 +45,11 @@ class ArticleController extends AbstractController
         ]);
 
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($article);
-            $em->flush();
-            $this->addFlash('success', 'Le nouvel article a bien été créé');
-            return $this->redirectToRoute('app_article_show', [
-                'id' => $article->getId(),
-            ]);
+
+
+            return $this->persistArticle($article, 'article bien modifié');
         }
         return $this->render('article/new.html.twig', [
             'form' => $form->createView(),
@@ -69,23 +67,29 @@ class ArticleController extends AbstractController
         $form = $this->createForm(ArticleType::class, $article, [
             'full' => false,
         ]);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($article);
-            $em->flush();
-
-            $this->addFlash('success', 'L\'article a bien été modifié');
-            
-            return $this->redirectToRoute('app_article_show', [
-                'id' => $article->getId(),
-            ]);
+            return $this->persistArticle($article, 'article bien modifié');
         }
         return $this->render('article/edit.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
         ]);
     }
+
+    private function persistArticle(Article $article, string $message)
+    {
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($article);
+            $em->flush();
+
+            $this->addFlash('success', $message);
+
+            return $this->redirectToRoute('app_article_show', [
+                'id' => $article->getId(),
+            ]);
+        }
+
 }
