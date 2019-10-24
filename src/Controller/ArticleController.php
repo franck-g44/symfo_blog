@@ -46,6 +46,11 @@ class ArticleController extends AbstractController
      */
     public function new(Request $request)
     {
+        $this->denyAccessUnlessGranted("ROLE_AUTHOR");
+        if (false) {
+            throw $this->createAccessDeniedException('Pas accès');
+        }
+
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article, [
             'validation_groups' => ['new', 'Default'],
