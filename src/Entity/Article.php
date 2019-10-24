@@ -1,12 +1,10 @@
 <?php
-
 namespace App\Entity;
-
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
- * @ORM\Table(name="blog_article")
  */
 class Article
 {
@@ -16,6 +14,11 @@ class Article
      * @ORM\Column(type="integer")
      */
     private $id;
+    /**
+     * @ORM\Column(type="string")
+     * @Gedmo\Slug(fields={"title"})
+     */
+    private $slug;
     /**
      * @ORM\Column(type="string", length=80)
      * @Assert\NotBlank()
@@ -40,6 +43,10 @@ class Article
     public function getId(): ?int
     {
         return $this->id;
+    }
+    public function getSlug(): ?string
+    {
+        return $this->slug;
     }
     public function getTitle(): ?string
     {
